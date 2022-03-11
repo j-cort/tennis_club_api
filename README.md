@@ -29,3 +29,29 @@ Bronze	0 – 2999
 Silver	3000 – 4999
 Gold	5000 – 9999
 Supersonic Legend	10000 – no limit
+
+Tools
+    "cors": "^2.8.5",
+    "dedent": "^0.7.0",
+    "express": "^4.17.3",
+    "jest": "^27.5.1",
+    "node-pg-migrate": "^6.2.1",
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.3",
+    "pg-format": "^1.0.4",
+    "supertest": "^6.2.2"
+
+
+npm run migrate create add players table
+npm run migrate create add matches table
+npm run migrate create add winners and losers view
+npm run migrate create add ranked players view
+npm run migrate create add unranked players view
+npm run migrate create add ranked player details view
+npm run migrate create add unranked player details view
+npm run migrate create add joint player details view
+DATABASE_URL=postgres://postgres:password@localhost:5432/tennis_club npm run migrate up
+
+npm run migrate create insert sample players
+npm run migrate create insert sample matches
+DATABASE_URL=postgres://postgres:password@localhost:5432/tennis_club_test npm run migrate up

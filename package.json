@@ -1,0 +1,25 @@
+{
+  "name": "tennis_api_tech_test",
+  "version": "1.0.0",
+  "description": "API Tech Test\r You are the president of the local Tennis Club. Your responsibilities include managing its players and their rankings. You’ve been asked to prepare a backend API in your preferred programming language that consists of the following endpoints:\r 1)\tAn endpoint for registering a new player into the club\r a.\tThe only required data for registration is the player’s first name and last name, nationality, and the date of birth\r b.\tNo two players of the same first name and last name can be added\r c.\tPlayers must be at least 16 years old to be able to enter the club\r d.\tEach newly registered player should start with the score of 1200 points for the purpose of the ranking\r 2)\tAn endpoint listing all players in the club\r a.\tIt should be possible to list only players of particular nationality and/or rank name (see the bottom of the document) or all players\r b.\tThe list should contain the following information for every player:\r i.\tthe current position in the whole ranking\r ii.\tfirst and last name\r iii.\tage\r iv.\tnationality\r v.\trank name\r vi.\tpoints\r c.\tThe players should be ordered by points (descending)\r i.\tThe unranked players should also be ordered by points (descending) but should appear at the bottom of the list, below all other ranks\r 3)\tAn endpoint for registering a match that has been played\r a.\tIt should require providing the winner and the loser of the match\r b.\tThe loser gives the winner 10% of his points from before the match (rounded down)\r i.\tFor example, if Luca (1000 points) wins a match against Brendan (900 points), Luca should end up with 1090 points after the game and Brendan with 810\r ii.\tIf Daniel (700 points) wins a match against James (1200 points), Daniel should end up with 820 points after the game and James with 1080\r c.\tThe business logic behind calculating new player scores after a match should be unit-tested\r The code should be as readable and as well-organized as possible. Add any other information and/or extra validation for the above endpoints as you deem necessary.\r Rank\tPoints\r Unranked\t(The player has played less than 3 games)\r Bronze\t0 – 2999\r Silver\t3000 – 4999\r Gold\t5000 – 9999\r Supersonic Legend\t10000 – no limit",
+  "main": "index.js",
+  "scripts": {
+    "migrate": "node-pg-migrate",
+    "start": "nodemon index.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dedent": "^0.7.0",
+    "express": "^4.17.3",
+    "jest": "^27.5.1",
+    "node-pg-migrate": "^6.2.1",
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.3",
+    "pg-format": "^1.0.4",
+    "supertest": "^6.2.2"
+  }
+}

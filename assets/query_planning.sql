@@ -44,52 +44,52 @@ CREATE VIEW unranked_players AS (
 
 -- Create View: ranked_player_details
 CREATE VIEW ranked_player_details AS (
-    SELECT 
-    id, 
-    CONCAT(first_name, ' ', last_name) AS name, 
-    points,
-    CASE WHEN points >= 10000 THEN 'Supersonic Legend'
-    WHEN points BETWEEN 5000 AND 9999 THEN 'Gold'
-    WHEN points BETWEEN 3000 AND 4999 THEN 'Silver'
-   	ELSE 'Bronze' END
-    AS rank_name,
-    nationality,
-    AGE(date_of_birth) AS age
+  SELECT 
+  id, 
+  CONCAT(first_name, ' ', last_name) AS name, 
+  points,
+  CASE WHEN points >= 10000 THEN 'Supersonic Legend'
+  WHEN points BETWEEN 5000 AND 9999 THEN 'Gold'
+  WHEN points BETWEEN 3000 AND 4999 THEN 'Silver'
+  ELSE 'Bronze' END
+  AS rank_name,
+  nationality,
+  AGE(date_of_birth) AS age
   FROM players
   WHERE id IN (SELECT * FROM ranked_players)
   ORDER BY points DESC
-)
+);
 
 -- Create View: unranked_player_details
 CREATE VIEW unranked_player_details AS (
-   SELECT 
-    id, 
-    CONCAT(first_name, ' ', last_name) AS name, 
-    points, 
-    'Unranked' AS rank_name,
-    nationality,
-    AGE(date_of_birth) AS age
+  SELECT 
+  id, 
+  CONCAT(first_name, ' ', last_name) AS name, 
+  points, 
+  'Unranked' AS rank_name,
+  nationality,
+  AGE(date_of_birth) AS age
   FROM players
   WHERE id IN (SELECT * FROM unranked_players) 
   ORDER BY points DESC
-)
+);
 
 -- Create View: joint_player_details
 CREATE VIEW joint_player_details AS (
   SELECT * FROM ranked_player_details
   UNION ALL
   SELECT * FROM unranked_player_details
-)
+);
 
 -- Insert Players
 INSERT INTO players (first_name, last_name, nationality, date_of_birth)
 VALUES 
-	('John', 'Smith', 'UK', '10-NOV-1989'),
-  ('Josh', 'Salt', 'USA', '16-SEPT-2000'),
-  ('Jayce', 'Winchester', 'Canada', '26-MAY-2002'),
-  ('Arya', 'Stark', 'Australia', '01-MAR-1995'),
-  ('Rob', 'Snow', 'New Zeland', '31-JAN-1985'),
-  ('john', 'smith', 'UK', '10-NOV-1989');
+	('Peter', 'Smith', 'UK', '10-NOV-1989'),
+  ('Roger', 'Gray', 'USA', '16-SEPT-2000'),
+  ('Alison', 'Hill', 'Canada', '26-MAY-2002'),
+  ('Alice', 'Tully', 'Australia', '01-MAR-1995'),
+  ('Serena', 'Snow', 'New Zeland', '31-JAN-1985');
+  
   
 -- Insert Matches
 INSERT INTO matches (winner_id, loser_id)
@@ -151,7 +151,7 @@ SELECT
 FROM joint_player_details
 WHERE nationality = 'USA' AND rank = 'Silver';
   
-
+-- Update Player Points
 SELECT points
 FROM players
 WHERE loser_id = X
