@@ -30,6 +30,25 @@ app.get("/players", async (req, res) => {
    res.send(rows) 
 });
 
+app.post("/players", async (req, res) => {
+  const { first_name, last_name, nationality, date_of_birth } = req.body
+  const { rows } = await pool.query(`
+  INSERT INTO players (first_name, last_name, nationality, date_of_birth)
+  VALUES ($1, $2, $3, $4) RETURNING *;`, 
+  [first_name, last_name, nationality, date_of_birth])
+  res.send(rows)
+});
+
+app.post("/matches", async (req, res) => {
+  console.log(req.body)
+  const { winner_id, loser_id } = req.body
+  const { rows } = await pool.query(`
+  INSERT INTO matches (winner_id, loser_id)
+  VALUES ($1, $2) RETURNING *;`, 
+  [winner_id, loser_id])
+  res.send(rows)
+});
+
 app.listen(3005, () => {
   console.log("listening on port 3005");
 });
