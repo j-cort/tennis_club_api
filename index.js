@@ -5,7 +5,6 @@ const matchRoutes = require('./src/router/matches')
 app.use(playerRoutes)
 app.use(matchRoutes)
 
-
 app.listen(3005, () => {
   console.log("listening on port 3005");
 });

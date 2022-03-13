@@ -6,8 +6,8 @@ class Database {
 
   static setup() {
     
-    if (process.env.NODE_ENV === "test") {
-      this.database = 'tennis_club_test'
+    if (process.env.NODE_ENV === "prod") {
+      this.database = 'tennis_club'
     } else {
       this.database = 'tennis_club_test'
     }
