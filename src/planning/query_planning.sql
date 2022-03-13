@@ -152,14 +152,6 @@ FROM joint_player_details
 WHERE nationality = 'USA' AND rank = 'Silver';
   
 -- Update Player Points
-SELECT points
-FROM players
-WHERE loser_id = X
-
 UPDATE players
-SET points = pointsies*0.9
-WHERE loser_id = X
-
-UPDATE players
-SET points = points + pointsies*0.1 
-WHERE loser_id = X
+SET points = 1320
+WHERE loser_id = 1

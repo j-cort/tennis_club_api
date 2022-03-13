@@ -1,21 +1,8 @@
-const express = require("express");
-const cors = require("cors");
-const pg = require("pg");
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
-
-const pool = new pg.Pool({
-  host: "localhost",
-  port: 5432,
-  database: "tennis_club_test",
-  user: "postgres",
-  password: "password",
-})
+const pool = require('./src/database')
+const app = require('./src/server')
 
 app.get("/players", async (req, res) => {
+
   const { rank_name, nationality } = req.body
 
   if(rank_name && nationality) {
@@ -64,6 +51,7 @@ app.get("/players", async (req, res) => {
     )
     res.send(rows) 
   } else {
+    console.log('hit else')
     const { rows } = await pool.query(`
       SELECT 
       id, 
@@ -82,7 +70,6 @@ app.get("/players", async (req, res) => {
 });
 
 app.post("/players", async (req, res) => {
-
   const { first_name, last_name, nationality, date_of_birth } = req.body
   const { rows } = await pool.query(`
   INSERT INTO players (first_name, last_name, nationality, date_of_birth)
@@ -92,12 +79,50 @@ app.post("/players", async (req, res) => {
 });
 
 app.post("/matches", async (req, res) => {
-  // business logic
   const { winner_id, loser_id } = req.body
+
+  const winnerPointsRow = await pool.query(`
+    SELECT points
+    FROM players
+    WHERE id = $1`,
+    [winner_id]
+    )
+  
+  const loserPointsRow = await pool.query(`
+    SELECT points
+    FROM players
+    WHERE id = $1`,
+    [loser_id]
+    )
+  let winnerPoints = winnerPointsRow['rows'][0]['points']
+  let loserPoints = loserPointsRow['rows'][0]['points']
+  const pointsToTransfer = Math.floor(loserPoints * 0.1)
+
+  winnerPoints += pointsToTransfer
+  loserPoints -= pointsToTransfer
+
+  const newWinnerPoints = await pool.query(`
+    UPDATE players
+    SET points = $1
+    WHERE id = $2
+    RETURNING points`,
+    [winnerPoints, winner_id]
+  )
+
+  const newLoserPoints = await pool.query(`
+    UPDATE players
+    SET points = $1
+    WHERE id = $2
+    RETURNING points`,
+    [loserPoints, loser_id]
+  )
+
   const { rows } = await pool.query(`
-  INSERT INTO matches (winner_id, loser_id)
-  VALUES ($1, $2) RETURNING *;`, 
-  [winner_id, loser_id])
+    INSERT INTO matches (winner_id, loser_id)
+    VALUES ($1, $2) RETURNING *;`, 
+    [winner_id, loser_id]
+  )
+
   res.send(rows)
 });
 
