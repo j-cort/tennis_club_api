@@ -1,9 +1,9 @@
-const app = require('./src/server')
-const playerRoutes = require('./src/router/players')
-const matchRoutes = require('./src/router/matches')
+const app = require("./src/server");
 
-app.use(playerRoutes)
-app.use(matchRoutes)
+app.use((err, req, res, next) => {
+  const { status = 500, message = "Something Went Wrong" } = err;
+  res.status(status).send(message);
+});
 
 app.listen(3005, () => {
   console.log("listening on port 3005");

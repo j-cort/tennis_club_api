@@ -50,8 +50,9 @@ npm run migrate create add unranked players view
 npm run migrate create add ranked player details view
 npm run migrate create add unranked player details view
 npm run migrate create add joint player details view
-DATABASE_URL=postgres://postgres:password@localhost:5432/tennis_club npm run migrate up
-
 npm run migrate create insert sample players
 npm run migrate create insert sample matches
+DATABASE_URL=postgres://postgres:password@localhost:5432/tennis_club npm run migrate up
 DATABASE_URL=postgres://postgres:password@localhost:5432/tennis_club_test npm run migrate up
+DATABASE_URL=postgres://postgres:password@localhost:5432/tennis_club_test npm run migrate down
+DATABASE_URL=postgres://postgres:password@localhost:5432/tennis_club npm run migrate down

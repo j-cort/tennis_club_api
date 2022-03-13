@@ -13,7 +13,7 @@ exports.up = pgm => {
       nationality,
       AGE(date_of_birth) AS age
       FROM players
-      WHERE id IN (SELECT * FROM unranked_players) 
+      WHERE id IN (SELECT player_id FROM unranked_players) 
       ORDER BY points DESC
     );
   `)

@@ -1,4 +1,5 @@
-const pool = require("../database");
+const Database = require("../database");
+const pool = Database.connect()
 
 class Macthes {
 

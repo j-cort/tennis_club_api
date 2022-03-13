@@ -1,7 +1,8 @@
-const pool = require("../src/database");
+const Database = require("../src/database");
+const pool = Database.connect()
 
 const clearTables = async () => {
-  await pool.query("TRUNCATE macthes RESTART IDENTITY CASCADE;");
+  await pool.query("TRUNCATE matches RESTART IDENTITY CASCADE;");
   await pool.query("TRUNCATE players RESTART IDENTITY CASCADE;");
 };
 
@@ -36,9 +37,5 @@ const addSampleMatches = async () => {
       (5, 2);
   `)
 };
-
-
-
-
 
 module.exports = { clearTables, closePool, addSamplePlayers, addSampleMatches };

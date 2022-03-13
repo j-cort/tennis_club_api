@@ -1,4 +1,6 @@
-const pool = require("../database");
+const Database = require("../database");
+const pool = Database.connect()
+
 
 class Players {
 
@@ -69,13 +71,27 @@ class Players {
   }
 
   static async register(first_name, last_name, nationality, date_of_birth) {
-
     const { rows } = await pool.query(`
       INSERT INTO players (first_name, last_name, nationality, date_of_birth)
       VALUES ($1, $2, $3, $4) RETURNING *;`, 
       [first_name, last_name, nationality, date_of_birth]
     )
     return rows
+  }
+
+  static async findAll() {
+    const { rows } = await pool.query(`
+      SELECT * FROM players;
+    `)
+    return rows
+  }
+
+  // For Testing
+  static async count() {
+    const { rows } = await pool.query(`
+      SELECT COUNT(*) FROM players;
+    `)
+    return Number(rows[0]['count']);
   }
   
 }
