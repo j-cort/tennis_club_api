@@ -1,54 +1,14 @@
 const request = require("supertest");
-// const { randomBytes } = require('crypto');
-// const { default: migrate } = require('node-pg-migrate');
-// const format = require('pg-format');
-// require('dotenv').config()
-
 const app = require("../src/server");
 const {
   clearTables,
   closePool,
+  playerCount,
   addSamplePlayers,
   addSampleMatches,
+  addThreeIdenticalMatches,
+  setPlayerPoints,
 } = require("./testHelpers");
-const Players = require("../src/repos/Players");
-const { now } = require("moment");
-
-// beforeAll(async () => {
-//   // Randomly generate role name to connect to pg with
-//   const roleName = 'a' + randomBytes(4).toString('hex');
-
-//   // Create a new role
-//   await pool.query(`
-//     CREATE ROLE ${roleName} WITH LOGIN PASSWORD '${roleName}';
-//   `);
-//   // Create a new schema
-//   await pool.query(`
-//     CREATE SCHEMA ${roleName} AUTHORIZATION ${roleName};
-//   `)
-//   // Disconnect entirely from pg
-//   await pool.end();
-//   // run our migrations in the new schema
-//   await migrate({
-//     schema: roleName,
-//     direction: 'up',
-//     log: () => {},
-//     noLock: true,
-//     dir: 'migrations',
-//     databaseUrl: {
-//       host: 'localhost',
-//       port: 5432,
-//       database: 'tennis_club_test',
-//       user: roleName,
-//       password: roleName
-//     }
-//   })
-//   // connect to PG as the newly created role
-//   process.env.PGUSER = roleName;
-//   process.env.PGPASSWORD = roleName;
-
-//   pool = require('../src/database')
-// });
 
 afterAll(async () => {
   await closePool();
@@ -60,7 +20,7 @@ describe("#POST:/players", () => {
   });
 
   test("add new player with default 1200 points", async () => {
-    const startingPlayerCount = await Players.count();
+    const startingPlayerCount = await playerCount();
     expect(startingPlayerCount).toEqual(0);
 
     await request(app)
@@ -79,7 +39,7 @@ describe("#POST:/players", () => {
         expect(points).toEqual(1200);
       });
 
-    const finishPlayerCount = await Players.count();
+    const finishPlayerCount = await playerCount();
     expect(finishPlayerCount).toEqual(1);
   });
 
@@ -185,6 +145,7 @@ describe("#POST:/players", () => {
 });
 
 describe("#GET:/players", () => {
+  
   beforeAll(async () => {
     await clearTables();
     await addSamplePlayers();
@@ -260,11 +221,103 @@ describe("#GET:/players", () => {
       });
   });
 
-  // test all columns are present
-  // test unranked players are at the bottom
-  // test position according to points
+  test("players are ranked according to points and matches played: Unranked(under 3 matches played), Bronze(0-2999), Silver(3000–4999). Gold(5000–9999), Supersonic Legend(10000+)", async () => {
+    await request(app)
+    .get("/players")
+    .expect(200)
+    .then((response) => {
+     const playerSix = response.body.filter(player => player.id === 6)[0]
+     expect(playerSix.rank_name === 'Unranked')
+    });
+    
+    await addThreeIdenticalMatches(6, 10)
+    await request(app)
+      .get("/players")
+      .expect(200)
+      .then((response) => {
+       const playerSix = response.body.filter(player => player.id === 6)[0]
+       expect(playerSix.rank_name === 'Bronze')
+      });
 
-  // test only certain rank is present
-  // test only certain nationaluty is present
-  // test only certain rank and nationality is present
+    await setPlayerPoints(3000, 6)
+    await request(app)
+      .get("/players")
+      .expect(200)
+      .then((response) => {
+       const playerSix = response.body.filter(player => player.id === 6)[0]
+       expect(playerSix.rank_name === 'Silver')
+      });
+
+      await setPlayerPoints(5000, 6)
+      await request(app)
+        .get("/players")
+        .expect(200)
+        .then((response) => {
+         const playerSix = response.body.filter(player => player.id === 6)[0]
+         expect(playerSix.rank_name === 'Gold')
+        });
+
+      await setPlayerPoints(10000, 6)
+      await request(app)
+        .get("/players")
+        .expect(200)
+        .then((response) => {
+         const playerSix = response.body.filter(player => player.id === 6)[0]
+         expect(playerSix.rank_name === 'Supersonic Legend')
+        });
+
+
+  });
+
+  test("can filter players by nationality", async () => {
+    await request(app)
+      .get("/players")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.every(player => player.nationality === 'UK')).toBe(false)
+      });
+
+    await request(app)
+      .get("/players")
+      .send({nationality: 'UK'})
+      .expect(200)
+      .then((response) => {
+        expect(response.body.every(player => player.nationality === 'UK')).toBe(true)
+      });
+  });
+
+  test("can filter players by rank_name", async () => {
+    await request(app)
+      .get("/players")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.every(player => player.rank_name === 'Unranked')).toBe(false)
+      });
+
+    await request(app)
+      .get("/players")
+      .send({rank_name: 'Unranked'})
+      .expect(200)
+      .then((response) => {
+        expect(response.body.every(player => player.rank_name === 'Unranked')).toBe(true)
+      });
+  });
+
+  test("can filter players by nationality & rank_name", async () => {
+    await request(app)
+      .get("/players")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.every(player => player.rank_name === 'Unranked' && player.nationality === 'UK')).toBe(false)
+      });
+
+    await request(app)
+      .get("/players")
+      .send({rank_name: 'Unranked', nationality: 'UK'})
+      .expect(200)
+      .then((response) => {
+        expect(response.body.every(player => player.rank_name === 'Unranked' && player.nationality === 'UK')).toBe(true)
+      });
+  });
+
 });

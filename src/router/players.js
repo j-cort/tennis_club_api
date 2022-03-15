@@ -17,7 +17,6 @@ router.get("/players", handleAsyncErrors(async (req, res) => {
     } else if (nationality) {
       players = await Players.findByNationality(nationality);
     } else {
-      console.log('about to find')
       players = await Players.find();
     
     };

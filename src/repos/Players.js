@@ -144,14 +144,6 @@ class Players {
       `)
     return rows
   }
-
-  // Testing Purposes Only
-  static async count() {
-    const { rows } = await pool.query(`
-      SELECT COUNT(*) FROM players;
-    `)
-    return Number(rows[0]['count']);
-  }
   
 }
 

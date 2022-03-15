@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.17% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.17% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/17</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -85,48 +85,48 @@
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">const express = require("express");
+<span class="cline-any cline-yes">3x</span></td><td class="text"><pre class="prettyprint lang-js">const express = require("express");
 const router = express.Router();
 const Matches = require('../repos/Matches')
 const AppError = require("../errorHandling/AppError");
 const handleAsyncErrors = require('../errorHandling/handleAsyncErrors')
 &nbsp;
-router.post("/matches", handleAsyncErrors(<span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
-    const { winner_id, loser_id } = <span class="cstat-no" title="statement not covered" >req.body</span>
-    let winnerPoints = <span class="cstat-no" title="statement not covered" >await Matches.getWinnerPoints(winner_id)</span>
-    let loserPoints = <span class="cstat-no" title="statement not covered" >await Matches.getLoserPoints(loser_id)</span>
-    const pointsToTransfer = <span class="cstat-no" title="statement not covered" >Math.floor(loserPoints * 0.1)</span>
-<span class="cstat-no" title="statement not covered" >    winnerPoints += pointsToTransfer</span>
-<span class="cstat-no" title="statement not covered" >    loserPoints -= pointsToTransfer</span>
+router.post("/matches", handleAsyncErrors(async (req, res) =&gt; {
+    const { winner_id, loser_id } = req.body
+    let winnerPoints = await Matches.getWinnerPoints(winner_id)
+    let loserPoints = await Matches.getLoserPoints(loser_id)
+    const pointsToTransfer = Math.floor(loserPoints * 0.1)
+    winnerPoints += pointsToTransfer
+    loserPoints -= pointsToTransfer
   
-<span class="cstat-no" title="statement not covered" >    await Matches.updateWinnerPoints(winnerPoints, winner_id)</span>
-<span class="cstat-no" title="statement not covered" >    await Matches.updateLoserPoints(loserPoints, loser_id)</span>
+    await Matches.updateWinnerPoints(winnerPoints, winner_id)
+    await Matches.updateLoserPoints(loserPoints, loser_id)
   
-    const newMatch = <span class="cstat-no" title="statement not covered" >await Matches.register(winner_id, loser_id)</span>
+    const newMatch = await Matches.register(winner_id, loser_id)
   
-<span class="cstat-no" title="statement not covered" >    res.send(newMatch)</span>
+    res.send(newMatch)
 }));
 &nbsp;
 module.exports = router;</pre></td></tr></table></pre>
@@ -136,7 +136,7 @@ module.exports = router;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Mar 15 2022 14:08:58 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 15 2022 21:30:59 GMT+0000 (Greenwich Mean Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

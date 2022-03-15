@@ -285,3 +285,6 @@ randomized player, match generation
 mocking
 order by last name, first_name
 should unranked players be given a position?
+macthers for nationality
+matchers for rank_name
+place default points into a constant variable

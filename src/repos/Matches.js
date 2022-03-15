@@ -1,7 +1,7 @@
 const Database = require("../database");
 const pool = Database.connect()
 
-class Macthes {
+class Matches {
 
   static async getWinnerPoints(winner_id) {
     const { rows } = await pool.query(`
@@ -55,4 +55,4 @@ class Macthes {
   }
 }
 
-module.exports = Macthes;
+module.exports = Matches;

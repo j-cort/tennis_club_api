@@ -10,6 +10,30 @@ const closePool = async () => {
   await pool.end();
 };
 
+const playerCount = async () => {
+  const { rows } = await pool.query(`
+    SELECT COUNT(*) FROM players;
+  `)
+  return Number(rows[0]['count']);
+}
+
+const matchCount = async () => {
+  const { rows } = await pool.query(`
+    SELECT COUNT(*) FROM matches;
+  `)
+  return Number(rows[0]['count']);
+}
+
+const getPoints = async (playerId) => {
+  const { rows } = await pool.query(`
+    SELECT points
+    FROM players
+    WHERE id = $1;`, 
+    [playerId]
+  )
+  return Number(rows[0]['points'])
+};
+
 const addSamplePlayers = async () => {
   await pool.query(`
     INSERT INTO players (first_name, last_name, nationality, date_of_birth)
@@ -41,6 +65,30 @@ const addSampleMatches = async () => {
       (2, 10),
       (2, 1);
   `)
+}
+
+const addThreeIdenticalMatches = async (winner_id, loser_id) => {
+  await pool.query(`
+    INSERT INTO matches (winner_id, loser_id)
+    VALUES 
+      ($1, $2),
+      ($1, $2),
+      ($1, $2);`,
+      [winner_id, loser_id])
+}
+
+const setPlayerPoints = async (points, playerId) => {
+  await pool.query(`
+  UPDATE players
+    SET points = $1
+    WHERE id = $2;`, 
+    [points, playerId]
+  )
+
 };
 
-module.exports = { clearTables, closePool, addSamplePlayers, addSampleMatches };
+
+
+
+
+module.exports = { clearTables, closePool, playerCount, matchCount, getPoints, addSamplePlayers, addSampleMatches, addThreeIdenticalMatches, setPlayerPoints}
