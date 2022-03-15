@@ -4,10 +4,15 @@ const request = require("supertest");
 // const format = require('pg-format');
 // require('dotenv').config()
 
-const app = require('../src/server')
-// let pool = require('../src/database')
-const { clearTables, closePool } = require("./testHelpers");
-const Players = require('../src/repos/Players')
+const app = require("../src/server");
+const {
+  clearTables,
+  closePool,
+  addSamplePlayers,
+  addSampleMatches,
+} = require("./testHelpers");
+const Players = require("../src/repos/Players");
+const { now } = require("moment");
 
 // beforeAll(async () => {
 //   // Randomly generate role name to connect to pg with
@@ -45,102 +50,221 @@ const Players = require('../src/repos/Players')
 //   pool = require('../src/database')
 // });
 
-
-beforeEach(async () => {
-  await clearTables();
-});
-
-
-afterAll(async() => {
+afterAll(async () => {
   await closePool();
 });
 
-describe('POST:/players', () => {
+describe("#POST:/players", () => {
+  beforeEach(async () => {
+    await clearTables();
+  });
 
   test("add new player with default 1200 points", async () => {
     const startingPlayerCount = await Players.count();
-    expect(startingPlayerCount).toEqual(0)
+    expect(startingPlayerCount).toEqual(0);
+
     await request(app)
-      .post('/players')
-      .send({ 
-        first_name: 'Michelle',
-        last_name: 'Gray',
-        nationality: 'UK',
-        date_of_birth: '15-06-2000'
+      .post("/players")
+      .send({
+        first_name: "Michelle",
+        last_name: "Gray",
+        nationality: "UK",
+        date_of_birth: "15-06-2000",
       })
       .expect(200)
-      .then(response => {
-        const { first_name, last_name, points } = response.body[0]
-        expect(first_name).toEqual('Michelle')
-        expect(last_name).toEqual('Gray')
-        expect(points).toEqual(1200)
-      })
+      .then((response) => {
+        const { first_name, last_name, points } = response.body[0];
+        expect(first_name).toEqual("Michelle");
+        expect(last_name).toEqual("Gray");
+        expect(points).toEqual(1200);
+      });
 
     const finishPlayerCount = await Players.count();
-    expect(finishPlayerCount).toEqual(1)
+    expect(finishPlayerCount).toEqual(1);
   });
 
-  test("throw error on missing firstname", async () => {
+  test("throw error on missing first name", async () => {
     await request(app)
-      .post('/players')
-      .send({ 
-        last_name: 'Gray',
-        nationality: 'UK',
-        date_of_birth: '15-06-2000'
+      .post("/players")
+      .send({
+        last_name: "Gray",
+        nationality: "UK",
+        date_of_birth: "15-06-2000",
       })
-      .expect(200)  
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual("first name required");
+      });
   });
 
+  test("throw error on missing last name", async () => {
+    await request(app)
+      .post("/players")
+      .send({
+        first_name: "Michelle",
+        nationality: "UK",
+        date_of_birth: "15-06-2000",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual("last name required");
+      });
+  });
 
+  test("throw error on missing nationality", async () => {
+    await request(app)
+      .post("/players")
+      .send({
+        first_name: "Michelle",
+        last_name: "Gray",
+        date_of_birth: "15-06-2000",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual("nationality required");
+      });
+  });
 
-})
+  test("throw error on missing date of birth", async () => {
+    await request(app)
+      .post("/players")
+      .send({
+        first_name: "Michelle",
+        last_name: "Gray",
+        nationality: "UK",
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual("date of birth required");
+      });
+  });
 
+  test("throw error on player under 16", async () => {
+    const fifteenYears = 1 * 1000 * 60 * 60 * 24 * 365 * 15;
+    const dob = new Date(Date.now() - fifteenYears).toISOString();
+    await request(app)
+      .post("/players")
+      .send({
+        first_name: "Michelle",
+        last_name: "Gray",
+        nationality: "UK",
+        date_of_birth: dob,
+      })
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toEqual("must be over 16");
+      });
+  });
 
+  test("throw error on duplicate name entries (case insensitive)", async () => {
+    await request(app)
+      .post("/players")
+      .send({
+        first_name: "michelle",
+        last_name: "gray",
+        nationality: "UK",
+        date_of_birth: "15-06-2000",
+      })
+      .expect(200);
 
+    await request(app)
+      .post("/players")
+      .send({
+        first_name: "michelle",
+        last_name: "gray",
+        nationality: "UK",
+        date_of_birth: "15-06-2000",
+      })
+      .expect(500)
+      .then((response) => {
+        expect(response.body).toEqual(
+          'duplicate key value violates unique constraint "players_first_name_last_name_key"'
+        );
+      });
+  });
+});
 
+describe("#GET:/players", () => {
+  beforeAll(async () => {
+    await clearTables();
+    await addSamplePlayers();
+    await addSampleMatches();
+  });
 
-// const User = require("../model/user");
-// const { resetDatabase, endPool } = require("./testHelpers");
-// const persistedData = require("../persistedData");
+  test("returns id, name, position, rank_name, points, nationality, age of all registered players", async () => {
+    await request(app)
+      .get("/players")
+      .expect(200)
+      .then((response) => {
+        expect(
+          response.body.every(
+            (player) =>
+              player.id &&
+              player.name &&
+              player.position &&
+              player.rank_name &&
+              player.points &&
+              player.nationality &&
+              player.age
+          )
+        ).toBe(true);
+      });
+  });
 
-// beforeEach(async () => {
-//   await resetDatabase();
-// });
+  test("player with ids 10, 9, 5, 2 are ranked 'Bronze', player with ids 8, 7, 6, 3, 1 are 'Unranked'", async () => {
+    await request(app)
+      .get("/players")
+      .expect(200)
+      .then((response) => {
+        const playedThreeOrMore = [10, 9, 5, 2]
+        const playedTwoOrLess = [8, 7, 6, 3, 1]
+        let rankedPlayers = response.body.filter(player => playedThreeOrMore.includes(player.id))
+        let unrankedPlayers = response.body.filter(player => playedTwoOrLess.includes(player.id))
+        expect(rankedPlayers.every(player => player.rank_name === 'Bronze'))
+        expect(unrankedPlayers.every(player => player.rank_name === 'Unranked'))
+      });
+  });
 
-// afterAll(async () => {
-//   await endPool();
-// });
+  test("unranked players are listed last", async () => {
+    await request(app)
+      .get("/players")
+      .expect(200)
+      .then((response) => {
+        expect(response.body[0].rank_name).toBe('Bronze')
+        expect(response.body[1].rank_name).toBe('Bronze')
+        expect(response.body[2].rank_name).toBe('Bronze')
+        expect(response.body[3].rank_name).toBe('Bronze')
+        expect(response.body[4].rank_name).toBe('Unranked')
+        expect(response.body[5].rank_name).toBe('Unranked')
+        expect(response.body[6].rank_name).toBe('Unranked')
+        expect(response.body[7].rank_name).toBe('Unranked')
+        expect(response.body[8].rank_name).toBe('Unranked')
+        expect(response.body[9].rank_name).toBe('Unranked')
+      });
+  });
 
-// test("adds a new user to the db", async () => {
-//   const userID = await User.create(
-//     "jamesywamesy",
-//     "jamesywamesy@jmail.com",
-//     "jameson"
-//   );
+  test("ranked players are listed in order of points (descending), then unranked players are listed in order of points (descending)", async () => {
+    await request(app)
+      .get("/players")
+      .expect(200)
+      .then((response) => {
+        expect(response.body[0].points >= response.body[1].points).toBe(true)
+        expect(response.body[1].points >= response.body[2].points).toBe(true)
+        expect(response.body[2].points >= response.body[3].points).toBe(true)
 
-//   const userInfo = await persistedData("users", userID);
-//   const { id, username, email, password } = userInfo
+        expect(response.body[4].points >= response.body[5].points).toBe(true)
+        expect(response.body[5].points >= response.body[6].points).toBe(true)
+        expect(response.body[6].points >= response.body[7].points).toBe(true)
+        expect(response.body[7].points >= response.body[8].points).toBe(true)
+        expect(response.body[8].points >= response.body[9].points).toBe(true)
+      });
+  });
 
-//   expect(id).toBe(userID);
-//   expect(username).toBe("jamesywamesy");
-//   expect(email).toBe("jamesywamesy@jmail.com");
-//   expect(await User.checkPW("jameson", password)).toBe(true);
-//   expect(await User.checkPW("wameson", password)).toBe(false);
+  // test all columns are present
+  // test unranked players are at the bottom
+  // test position according to points
 
-// });
-
-// test("does not create a user with duplicate credentials", async () => {
-  
-//   const newUser = await User.create('jamesywamesy', 'jamesywamesy@jmail.com', 'jameson');
-//   expect(newUser).toBeTruthy;
-
-//   const sameUsername = await User.create("jamesywamesy", "bamesywamesy@jmail.com", "jameson")
-//   expect(sameUsername).toBeFalsy();
-
-//   const sameEmail = await User.create("bamesywamesy", "jamesywamesy@jmail.com", "jameson")
-//   expect(sameEmail).toBeFalsy();
-
-//   const uniqueCredentials = await User.create("bamesywamesy", "bamesywamesy@jmail.com", "jameson")
-//   expect(uniqueCredentials).toBeTruthy();
-
-// });
+  // test only certain rank is present
+  // test only certain nationaluty is present
+  // test only certain rank and nationality is present
+});

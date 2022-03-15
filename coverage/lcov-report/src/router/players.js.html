@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.61% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>10/21</span>
+                <span class='fraction'>21/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>4/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/3</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.61% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/21</span>
+                <span class='fraction'>21/24</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -99,69 +99,69 @@
 <a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">const express = require("express");
 const router = express.Router();
+const moment = require('moment')
 const Players = require('../repos/Players')
+const AppError = require("../errorHandling/AppError");
+const handleAsyncErrors = require('../errorHandling/handleAsyncErrors')
+const { validatePlayerInput } = require('../errorHandling/validations')
 &nbsp;
-router.get("/players", <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
 &nbsp;
-  const { rank_name, nationality } = <span class="cstat-no" title="statement not covered" >req.body</span>
-  let players;
+router.get("/players", handleAsyncErrors(async (req, res) =&gt; {
+    const { rank_name, nationality } = req.body
+    let players;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if(rank_name &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >nationality)</span> {
+<span class="cstat-no" title="statement not covered" >      players = await Players.findByRankAndNationality(rank_name, nationality);</span>
+    } else <span class="missing-if-branch" title="if path not taken" >I</span>if (rank_name) {
+<span class="cstat-no" title="statement not covered" >      players = await Players.findByRank(rank_name);</span>
+    } else <span class="missing-if-branch" title="if path not taken" >I</span>if (nationality) {
+<span class="cstat-no" title="statement not covered" >      players = await Players.findByNationality(nationality);</span>
+    } else {
+      console.log('about to find')
+      players = await Players.find();
+    
+    };
+    res.json(players)
+}));
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if(rank_name &amp;&amp; nationality) {</span>
-<span class="cstat-no" title="statement not covered" >    players = await Players.findByRankAndNationality(rank_name, nationality);</span>
-  } else <span class="cstat-no" title="statement not covered" >if (rank_name) {</span>
-<span class="cstat-no" title="statement not covered" >    players = await Players.findByRank(rank_name);</span>
-  } else <span class="cstat-no" title="statement not covered" >if (nationality) {</span>
-<span class="cstat-no" title="statement not covered" >    players = await Players.findByNationality(nationality);</span>
-  } else {
-<span class="cstat-no" title="statement not covered" >    players = await Players.find();</span>
-  };
+router.post("/players", handleAsyncErrors(async (req, res) =&gt; {
+    const { first_name, last_name, nationality, date_of_birth } = req.body
+    validatePlayerInput(first_name, last_name, nationality, date_of_birth)
+    const newPlayer = await Players.register(first_name, last_name, nationality, date_of_birth)
+    res.json(newPlayer)
+}));
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  res.send(players)</span>
- 
-});
-&nbsp;
-router.post("/players", async (req, res) =&gt; {
-  const { first_name, last_name, nationality, date_of_birth } = req.body
-  const newPlayer = await Players.register(first_name, last_name, nationality, date_of_birth)
-  res.send(newPlayer)
-});
-&nbsp;
-router.get("/allplayers", <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
-  const allPlayers = <span class="cstat-no" title="statement not covered" >await Players.findAll();</span>
-<span class="cstat-no" title="statement not covered" >  res.send(allPlayers);</span>
-})
 module.exports = router;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -169,7 +169,7 @@ module.exports = router;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Sun Mar 13 2022 22:19:13 GMT+0000 (Greenwich Mean Time)
+                at Tue Mar 15 2022 14:08:58 GMT+0000 (Greenwich Mean Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

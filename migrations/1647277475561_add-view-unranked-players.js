@@ -5,10 +5,11 @@ exports.shorthands = undefined;
 exports.up = pgm => {
   pgm.sql(`
     CREATE VIEW unranked_players AS (
+      SELECT id AS player_id
+      FROM players
+      EXCEPT
       SELECT player_id
-      FROM winners_and_losers
-      GROUP BY player_id
-      HAVING COUNT(*) <= 2
+      FROM ranked_players
     );
   `)
 };

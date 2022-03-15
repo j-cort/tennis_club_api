@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const moment = require('moment')
 const Players = require('../repos/Players')
 const AppError = require("../errorHandling/AppError");
 const handleAsyncErrors = require('../errorHandling/handleAsyncErrors')
+const { validatePlayerInput } = require('../errorHandling/validations')
 
 
 router.get("/players", handleAsyncErrors(async (req, res) => {
@@ -15,20 +17,18 @@ router.get("/players", handleAsyncErrors(async (req, res) => {
     } else if (nationality) {
       players = await Players.findByNationality(nationality);
     } else {
+      console.log('about to find')
       players = await Players.find();
+    
     };
-    res.send(players)
+    res.json(players)
 }));
 
 router.post("/players", handleAsyncErrors(async (req, res) => {
-  // return next(new AppError('invalid input', 400))
     const { first_name, last_name, nationality, date_of_birth } = req.body
+    validatePlayerInput(first_name, last_name, nationality, date_of_birth)
     const newPlayer = await Players.register(first_name, last_name, nationality, date_of_birth)
-    res.send(newPlayer)
+    res.json(newPlayer)
 }));
 
-router.get("/allplayers", handleAsyncErrors(async (req, res) => {
-  const allPlayers = await Players.findAll();
-  res.send(allPlayers);
-}))
 module.exports = router;

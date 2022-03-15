@@ -13,6 +13,10 @@ class Server {
     this.app.use(express.urlencoded({extended: true}));
     this.app.use(playerRoutes);
     this.app.use(matchRoutes);
+    this.app.use((err, req, res, next) => {
+      const { status = 500, message = "Something Went Wrong" } = err;
+      res.status(status).json(message);
+    });
   }
 }
 
