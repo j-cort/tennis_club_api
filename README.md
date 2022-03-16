@@ -88,7 +88,7 @@ You are the president of the local Tennis Club. Your responsibilities include ma
 - Incorporated database migrations for more flexible updates
 - Express routers (players, matches) are utilised to better separate code, handle validation and conditional logic for endpoints
 - Repos for both major endpoints (Players, Matches) do the heavy lifting regarding SQL queries, and abstract generic code out of routers
-- jest.config file sets NODE_ENV to test when test files are run, also enabling the database to adjust the database connection accordingly (e.g. choosing tennis_club_test instaead of tennis_club database)
+- jest.config file sets NODE_ENV to test when test files are run, also enabling the database to adjust the database connection accordingly (e.g. choosing tennis_club_test instead of tennis_club database)
 - SRP was respected by extracting the following resources into separate files/folders:
   - database
   - server
@@ -103,7 +103,7 @@ You are the president of the local Tennis Club. Your responsibilities include ma
 - List Bronze Players
 ![Bronze Players](./src/planning/postman/postman_select_players_bronze.PNG)
 - List UK Players
-![UK Players](./src/planning/postman/postman_select_players_bronze.PNG)
+![UK Players](./src/planning/postman/postman_select_players_uk.PNG)
 - List Bronze UK Players
 ![Bronze UK Players](./src/planning/postman/postman_select_players_bronze_uk.PNG)
 
@@ -216,15 +216,15 @@ API Requests 1       |     API Requests 2       |     API Requests 3
 
 - Add secondary ordering by last name (in case two players have the same points)
 - Add tertiary ordering by first name (in case two players have the same last name)
-- Produce custom error message when inputs duplicate first name/last name combination during player registration
-- Produce custom error message when inputs invalid/missing winner_id or loser_id during match registration
+- Produce custom error message when input violates no duplicate first/last name combination constraint during player registration
+- Produce custom error message when input is invalid or incomplete during match registration
 - Implement parallel testing
-- Randomized the generation of new players and matches for tests, thus making tests more robust
+- Randomise the generation of new players and matches for tests - making tests more robust
 - mocking to better isolate unit tests
 - mocking the database to isolate and test the server behaviour
 - consider whether unranked players should have a position or not
 - add test to ensure positions are allocated accurately
 - validate nationalities against fixed list
 - validate rank names against fixed list
-- place default points into a constant variable
+- place default points into a constant variable for repeated use
 - 1647277639996_add-view-joint-player-details migration is no longer used, consider removing
