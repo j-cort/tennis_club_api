@@ -206,11 +206,13 @@ nodemon index.js
 
 - Download Postman
 https://www.postman.com/product/rest-client/
-- Send Requests Through Postman App:
+- Send Requests Through Postman App (for example):
 
 API Requests 1       |     API Requests 2       |     API Requests 3
 :-------------------------:|:-------------------------:|:-------------------------:
 <img src="./src/planning/postman/postman_documentation_01.PNG" alt="api1" width="350">  |  <img src="./src/planning/postman/postman_documentation_02.PNG" alt="api2" width="350">  |  <img src="./src/planning/postman/postman_documentation_03.PNG" alt="api3" width="350"> 
+
+See demo section for more in depth examples.
 
 ## Potential Improvements & Extensions
 
