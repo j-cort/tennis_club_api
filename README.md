@@ -185,8 +185,8 @@ DATABASE_URL=postgres://postgres:password@localhost:5432/tennis_club_test npm ru
 
 MAC OS
 ```
-DATABASE_URL=postgres://<SET USERNAME>@localhost:5432/tennis_club npm run migrate up
-DATABASE_URL=postgres://<SET USERNAME>@localhost:5432/tennis_club_test npm run migrate up
+DATABASE_URL=postgres://<USERNAME>@localhost:5432/tennis_club npm run migrate up
+DATABASE_URL=postgres://<USERNAME>@localhost:5432/tennis_club_test npm run migrate up
 ```
 *your username is likely your mac's username or 'postgres' depending on how you set up postgres*
 
@@ -227,3 +227,4 @@ API Requests 1       |     API Requests 2       |     API Requests 3
 - validate nationalities against fixed list
 - validate rank names against fixed list
 - place default points into a constant variable
+- 1647277639996_add-view-joint-player-details migration is no longer used, consider removing
